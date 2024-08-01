@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
+import babel from "@rollup/plugin-babel";
 
 export default defineConfig({
   build: {
@@ -9,10 +10,16 @@ export default defineConfig({
       fileName: (format) => `library.${format}.js`,
     },
     rollupOptions: {
-      external: ["fs", "fs/promises"],
+      external: [],
       output: {
         globals: {},
       },
+      plugins: [
+        babel({
+          babelHelpers: "runtime",
+          extensions: [".js", ".ts"],
+        }),
+      ],
     },
   },
 });
