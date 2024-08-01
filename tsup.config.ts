@@ -7,6 +7,7 @@ export default defineConfig({
   outDir: 'dist',
   clean: false,
   dts: false,
+  noExternal: ['chalk'],
   banner: {
     js: '#!/usr/bin/env node'
   }

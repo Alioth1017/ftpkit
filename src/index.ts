@@ -1,10 +1,17 @@
-export type Options = {
-  [key: string]: string;
-};
+import { FtpUploader, type Config } from "./FtpUploader";
 
-export class YourAction {
+export type Options = Pick<Config, "localDir" | "remoteDir"> &
+  Config["connect"];
+
+export class FtpUpload {
   constructor(private options: Options) {}
-  doSomething() {
-    console.log("do something with the options", this.options);
+  async execute() {
+    if (!this.options) {
+      return;
+    }
+    const { localDir, remoteDir, ...connect } = this.options;
+    
+    const uploader = new FtpUploader({ localDir, remoteDir, connect });
+    await uploader.uploadFiles();
   }
 }
