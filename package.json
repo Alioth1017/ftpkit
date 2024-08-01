@@ -1,0 +1,42 @@
+{
+  "name": "your-library-name",
+  "version": "0.0.1",
+  "description": "Your library description",
+  "main": "dist/library.umd.js",
+  "module": "dist/library.es.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "your-cli-command": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "vite build && tsup && tsc --emitDeclarationOnly",
+    "prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish --any-branch"
+  },
+  "keywords": [
+    "note-taking",
+    "productivity"
+  ],
+  "author": "Your name",
+  "license": "ISC",
+  "files": [
+    "dist/**/*",
+    "!dist/**/*.map",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "np": "^10.0.5",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.13"
+  }
+}
