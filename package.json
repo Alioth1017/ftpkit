@@ -1,6 +1,6 @@
 {
   "name": "ftpkit",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A command line tool for uploading files to FTP server",
   "main": "dist/library.umd.js",
   "module": "dist/library.es.js",
