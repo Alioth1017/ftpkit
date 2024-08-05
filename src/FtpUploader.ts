@@ -5,6 +5,7 @@ import { readdir } from "fs/promises";
 import chalk from "chalk";
 
 export type Config = {
+  entries?: string[];
   localDir: string;
   remoteDir: string;
   connect: AccessOptions;
@@ -35,7 +36,6 @@ export class FtpUploader {
   async uploadFiles(): Promise<void> {
     const localDirPath = path.resolve(process.cwd(), this.config.localDir);
     const remoteDirPath = this.config.remoteDir;
-
 
     const [localFiles, localIndexFiles] = await this.getSortedFiles(
       localDirPath
@@ -84,14 +84,18 @@ export class FtpUploader {
     let files = await this.getFiles(dirPath);
     let indexFiles = [];
     let otherFiles = [];
-
+    const entries = this.config.entries || ["index.html"];
     for (let file of files) {
-      if (file.name === "index.html") {
+      if (entries.includes(file.name)) {
         indexFiles.push(file);
       } else {
         otherFiles.push(file);
       }
     }
+    // indexFiles根据entries的顺序排序
+    indexFiles.sort((a, b) => {
+      return entries.indexOf(a.name) - entries.indexOf(b.name);
+    });
 
     return [otherFiles, indexFiles];
   }

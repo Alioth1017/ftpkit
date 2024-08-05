@@ -1,6 +1,6 @@
 import { FtpUploader, type Config } from "./FtpUploader";
 
-export type Options = Pick<Config, "localDir" | "remoteDir"> &
+export type Options = Pick<Config, "entries" | "localDir" | "remoteDir"> &
   Config["connect"];
 
 export class FtpUpload {
@@ -9,9 +9,9 @@ export class FtpUpload {
     if (!this.options) {
       return;
     }
-    const { localDir, remoteDir, ...connect } = this.options;
-    
-    const uploader = new FtpUploader({ localDir, remoteDir, connect });
+    const { entries, localDir, remoteDir, ...connect } = this.options;
+
+    const uploader = new FtpUploader({ entries, localDir, remoteDir, connect });
     await uploader.uploadFiles();
   }
 }

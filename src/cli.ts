@@ -13,6 +13,7 @@ program
   .option("-u, --user <user>", "FTP server user")
   .option("-p, --password <password>", "FTP server password")
   .option("--secure", "Use secure connection", false)
+  .option("-e, --entries <entries...>", "Entries to upload", ["index.html"])
   .action(async (options: Options) => {
     console.log("options \n", options);
     await new FtpUpload(options).execute();
