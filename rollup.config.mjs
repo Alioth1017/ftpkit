@@ -20,9 +20,20 @@ export default {
       sourcemap: true,
     },
   ],
+  external: [
+    'ssh2-sftp-client',
+    'basic-ftp',
+    'chalk',
+    'commander',
+    'fs',
+    'path',
+    'fs/promises'
+  ],
   plugins: [
     json(),
-    resolve(),
+    resolve({
+      preferBuiltins: true,
+    }),
     commonjs(),
     typescript(),
     babel({

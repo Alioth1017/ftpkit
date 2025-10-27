@@ -1,6 +1,41 @@
-# CLI Library Template
+# FtpKit
 
 [English](./README.md) | 简体中文
+
+一个用于上传文件到 FTP/SSH 服务器的命令行工具。
+
+## 功能特性
+
+- 支持 FTP 和 SSH (SFTP) 协议
+- 并发文件上传以提升性能
+- 文件比较以避免不必要的上传
+- 可自定义入口文件上传顺序
+
+## 使用方法
+
+### FTP 模式（默认）
+
+```bash
+ftpkit -l ./dist -r /var/www/html --host example.com -u username -p password
+```
+
+### SSH 模式
+
+```bash
+ftpkit -l ./dist -r /var/www/html --host example.com -u username -p password -m ssh
+```
+
+## 参数选项
+
+- `-l, --localDir <localDir>` - 本地目录路径
+- `-r, --remoteDir <remoteDir>` - 远程目录路径
+- `--host <host>` - 服务器主机
+- `--port <port>` - 服务器端口 (默认: FTP 为 21，SSH 为 22)
+- `-u, --user <user>` - 服务器用户名
+- `-p, --password <password>` - 服务器密码
+- `--secure` - 使用安全连接 (仅适用于 FTP 模式)
+- `-m, --mode <mode>` - 连接模式: `ftp` 或 `ssh` (默认: `ftp`)
+- `-e, --entries <entries...>` - 要上传的入口文件 (默认: `["index.html"]`)
 
 ## 开发
 
