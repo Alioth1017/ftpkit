@@ -23,7 +23,6 @@ export default {
   external: [
     'ssh2-sftp-client',
     'basic-ftp',
-    'chalk',
     'commander',
     'fs',
     'path',
