@@ -74,7 +74,7 @@ export class FtpUploader extends BaseUploader<Config> {
 						remoteFilePath,
 					)
 				) {
-					break;
+					return;
 				}
 				await this.ensureRemoteDir(
 					ftpClient,
