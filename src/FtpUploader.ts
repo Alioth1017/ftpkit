@@ -18,6 +18,7 @@ export class FtpUploader extends BaseUploader<Config> {
 		await ftpClient.access(this.config.connect);
 
 		while (queue.length > 0) {
+			if (this.isCancelled) break;
 			const localFilePath = queue.shift();
 			if (!localFilePath) break;
 

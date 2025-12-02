@@ -37,12 +37,14 @@ export abstract class BaseUploader<T extends BaseConfig> {
 	protected remotePathMap: Map<string, boolean>;
 	protected failedFiles: string[];
 	protected progressBar?: SingleBar;
+	protected isCancelled: boolean;
 
 	constructor(config: T) {
 		this.config = config;
 		this.uploadedBytes = 0;
 		this.remotePathMap = new Map();
 		this.failedFiles = [];
+		this.isCancelled = false;
 		if (this.config.logStyle === "bar") {
 			this.progressBar = new SingleBar({
 				format:
@@ -52,6 +54,14 @@ export abstract class BaseUploader<T extends BaseConfig> {
 				hideCursor: true,
 			});
 		}
+	}
+
+	cancel(): void {
+		this.isCancelled = true;
+		if (this.config.logStyle === "bar") {
+			this.progressBar?.stop();
+		}
+		console.log(chalk.yellow("Upload cancelled by user."));
 	}
 
 	async uploadFiles(): Promise<void> {
@@ -76,7 +86,7 @@ export abstract class BaseUploader<T extends BaseConfig> {
 
 		// Main files queue
 		const mainQueue = [...localFilePaths];
-		if (mainQueue.length > 0) {
+		if (mainQueue.length > 0 && !this.isCancelled) {
 			const workerCount = Math.min(maxConcurrency, mainQueue.length);
 			const workers = Array.from({ length: workerCount }, () =>
 				this.processQueue(mainQueue, remoteDirPath, localDirPath, totalBytes),
@@ -86,7 +96,7 @@ export abstract class BaseUploader<T extends BaseConfig> {
 
 		// Index files queue (processed after main files)
 		const indexQueue = [...localIndexFilePaths];
-		if (indexQueue.length > 0) {
+		if (indexQueue.length > 0 && !this.isCancelled) {
 			const workerCount = Math.min(maxConcurrency, indexQueue.length);
 			const workers = Array.from({ length: workerCount }, () =>
 				this.processQueue(indexQueue, remoteDirPath, localDirPath, totalBytes),
@@ -108,7 +118,9 @@ export abstract class BaseUploader<T extends BaseConfig> {
 			throw new Error(`Upload failed for ${this.failedFiles.length} files.`);
 		}
 
-		console.log(chalk.green(`Uploaded Finished.`));
+		if (!this.isCancelled) {
+			console.log(chalk.green(`Uploaded Finished.`));
+		}
 	}
 
 	protected abstract processQueue(

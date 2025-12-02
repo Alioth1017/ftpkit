@@ -24,6 +24,7 @@ export class SshUploader extends BaseUploader<SshConfig> {
 		await sftpClient.connect(this.config.connect);
 
 		while (queue.length > 0) {
+			if (this.isCancelled) break;
 			const localFilePath = queue.shift();
 			if (!localFilePath) break;
 

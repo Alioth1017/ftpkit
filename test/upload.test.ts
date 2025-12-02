@@ -152,4 +152,21 @@ describe("FtpUpload", () => {
 			}),
 		);
 	});
+
+	it("should cancel upload", async () => {
+		const options = {
+			localDir: "./test",
+			remoteDir: "/site/wwwroot",
+			host: "ftp.example.com",
+			user: "user",
+			password: "password",
+			mode: "ftp" as const,
+			entries: ["index.html", "style.css"],
+		};
+
+		const uploader = new FtpUpload(options);
+		const uploadPromise = uploader.execute();
+		uploader.cancel();
+		await uploadPromise;
+	});
 });

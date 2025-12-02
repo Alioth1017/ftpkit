@@ -51,10 +51,20 @@ const uploader = new FtpUpload({
   user: 'username',
   password: 'password',
   mode: 'ssh', // or 'ftp'
-  entries: ['index.html'] // Files to upload last
+  entries: ['index.html'], // Files to upload last
+  // Optional: Progress callback
+  progress: (data) => {
+    console.log(`Uploading ${data.currentFile}: ${data.percent}%`);
+  }
 });
 
-await uploader.execute();
+// Start upload
+const uploadPromise = uploader.execute();
+
+// Cancel upload if needed
+// uploader.cancel();
+
+await uploadPromise;
 ```
 
 ## Options

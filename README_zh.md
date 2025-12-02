@@ -51,10 +51,20 @@ const uploader = new FtpUpload({
   user: 'username',
   password: 'password',
   mode: 'ssh', // 或 'ftp'
-  entries: ['index.html'] // 最后上传的文件
+  entries: ['index.html'], // 最后上传的文件
+  // 可选：进度回调
+  progress: (data) => {
+    console.log(`正在上传 ${data.currentFile}: ${data.percent}%`);
+  }
 });
 
-await uploader.execute();
+// 开始上传
+const uploadPromise = uploader.execute();
+
+// 如果需要，可以取消上传
+// uploader.cancel();
+
+await uploadPromise;
 ```
 
 ## 参数选项

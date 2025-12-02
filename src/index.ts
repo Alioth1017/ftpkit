@@ -16,6 +16,8 @@ export type Options = Pick<Config, "entries" | "localDir" | "remoteDir"> &
 	};
 
 export class FtpUpload {
+	private uploader?: FtpUploader | SshUploader;
+
 	constructor(private options: Options) {}
 	async execute() {
 		if (!this.options) {
@@ -51,8 +53,8 @@ export class FtpUpload {
 				progress: this.options.progress,
 			};
 
-			const uploader = new SshUploader(sshConfig);
-			await uploader.uploadFiles();
+			this.uploader = new SshUploader(sshConfig);
+			await this.uploader.uploadFiles();
 		} else {
 			// Set default port for FTP if not specified
 			const ftpConnect = {
@@ -60,7 +62,7 @@ export class FtpUpload {
 				port: connect.port ? parseInt(connect.port.toString(), 10) : 21,
 			};
 
-			const uploader = new FtpUploader({
+			this.uploader = new FtpUploader({
 				entries,
 				localDir,
 				remoteDir,
@@ -68,7 +70,11 @@ export class FtpUpload {
 				logStyle: this.options.logStyle,
 				progress: this.options.progress,
 			});
-			await uploader.uploadFiles();
+			await this.uploader.uploadFiles();
 		}
+	}
+
+	cancel() {
+		this.uploader?.cancel();
 	}
 }
