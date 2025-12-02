@@ -20,7 +20,7 @@ program
 	.option("-e, --entries <entries...>", "Entries to upload", ["index.html"])
 	.action(async (options: Options) => {
 		console.log("options \n", options);
-		await new FtpUpload(options).execute();
+		await new FtpUpload({ ...options, logStyle: "bar" }).execute();
 	});
 
 program.parse(process.argv);
