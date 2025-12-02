@@ -7,6 +7,12 @@ export type Options = Pick<Config, "entries" | "localDir" | "remoteDir"> &
 	Config["connect"] & {
 		mode?: Mode;
 		logStyle?: "bar" | "text" | "none";
+		progress?: (progress: {
+			uploadedBytes: number;
+			totalBytes: number;
+			currentFile: string;
+			percent: number;
+		}) => void;
 	};
 
 export class FtpUpload {
@@ -42,6 +48,7 @@ export class FtpUpload {
 				remoteDir,
 				connect: sshConnect,
 				logStyle: this.options.logStyle,
+				progress: this.options.progress,
 			};
 
 			const uploader = new SshUploader(sshConfig);
@@ -59,6 +66,7 @@ export class FtpUpload {
 				remoteDir,
 				connect: ftpConnect,
 				logStyle: this.options.logStyle,
+				progress: this.options.progress,
 			});
 			await uploader.uploadFiles();
 		}

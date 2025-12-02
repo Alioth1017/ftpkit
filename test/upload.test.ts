@@ -124,4 +124,32 @@ describe("FtpUpload", () => {
 		expect(mockSftpClient.put).toHaveBeenCalled();
 		expect(mockSftpClient.end).toHaveBeenCalled();
 	});
+
+	it("should call progress callback during upload", async () => {
+		const progressCallback = vi.fn();
+		const options = {
+			localDir: "./test",
+			remoteDir: "/site/wwwroot",
+			host: "ftp.example.com",
+			user: "user",
+			password: "password",
+			mode: "ftp" as const,
+			entries: ["index.html"],
+			progress: progressCallback,
+		};
+
+		const uploader = new FtpUpload(options);
+		await uploader.execute();
+
+		expect(progressCallback).toHaveBeenCalled();
+		// Verify that the callback was called with the correct arguments including percent
+		expect(progressCallback).toHaveBeenCalledWith(
+			expect.objectContaining({
+				uploadedBytes: expect.any(Number),
+				totalBytes: expect.any(Number),
+				currentFile: expect.any(String),
+				percent: expect.any(Number),
+			}),
+		);
+	});
 });

@@ -12,6 +12,12 @@ export interface BaseConfig {
 	connect: any;
 	maxConcurrency?: number;
 	logStyle?: "bar" | "text" | "none";
+	progress?: (progress: {
+		uploadedBytes: number;
+		totalBytes: number;
+		currentFile: string;
+		percent: number;
+	}) => void;
 }
 
 export interface File {
@@ -167,13 +173,21 @@ export abstract class BaseUploader<T extends BaseConfig> {
 		uploadedBytes: number,
 		totalBytes: number,
 	): void {
+		const percent = Math.round((uploadedBytes / totalBytes) * 100);
+		if (this.config.progress) {
+			this.config.progress({
+				uploadedBytes,
+				totalBytes,
+				currentFile: filePath,
+				percent,
+			});
+		}
 		if (this.config.logStyle === "bar") {
 			this.progressBar?.update(uploadedBytes);
 		} else if (
 			this.config.logStyle === "text" ||
 			this.config.logStyle === undefined
 		) {
-			const percent = Math.round((uploadedBytes / totalBytes) * 100);
 			console.log(chalk.gray(`${percent}% Uploaded ${filePath}`));
 		}
 	}
