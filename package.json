@@ -1,6 +1,6 @@
 {
 	"name": "ftpkit",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"description": "A command line tool for uploading files to FTP/SSH server",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",
