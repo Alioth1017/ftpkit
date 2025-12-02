@@ -8,21 +8,53 @@ A command line tool for uploading files to FTP/SSH servers.
 
 - Support both FTP and SSH (SFTP) protocols
 - Concurrent file uploads for better performance
-- File comparison to avoid unnecessary uploads
-- Customizable entry files upload order
+- File comparison (size and modification time) to avoid unnecessary uploads
+- Customizable entry files upload order (e.g., upload `index.html` last)
+
+## Installation
+
+```bash
+# Global installation
+npm install -g ftpkit
+
+# Or use with npx
+npx ftpkit --help
+```
 
 ## Usage
 
-### FTP Mode (default)
+### CLI
+
+#### FTP Mode (default)
 
 ```bash
 ftpkit -l ./dist -r /var/www/html --host example.com -u username -p password
 ```
 
-### SSH Mode
+#### SSH Mode
 
 ```bash
 ftpkit -l ./dist -r /var/www/html --host example.com -u username -p password -m ssh
+```
+
+### Programmatic Usage
+
+You can also use FtpKit as a library in your Node.js scripts.
+
+```typescript
+import { FtpUpload } from 'ftpkit';
+
+const uploader = new FtpUpload({
+  localDir: './dist',
+  remoteDir: '/var/www/html',
+  host: 'example.com',
+  user: 'username',
+  password: 'password',
+  mode: 'ssh', // or 'ftp'
+  entries: ['index.html'] // Files to upload last
+});
+
+await uploader.execute();
 ```
 
 ## Options
