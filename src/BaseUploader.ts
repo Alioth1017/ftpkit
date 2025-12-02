@@ -11,6 +11,7 @@ export interface BaseConfig {
 	// biome-ignore lint/suspicious/noExplicitAny: Generic connect options
 	connect: any;
 	maxConcurrency?: number;
+	logStyle?: "bar" | "text" | "none";
 }
 
 export interface File {
@@ -29,20 +30,22 @@ export abstract class BaseUploader<T extends BaseConfig> {
 	protected uploadedBytes: number;
 	protected remotePathMap: Map<string, boolean>;
 	protected failedFiles: string[];
-	protected progressBar: SingleBar;
+	protected progressBar?: SingleBar;
 
 	constructor(config: T) {
 		this.config = config;
 		this.uploadedBytes = 0;
 		this.remotePathMap = new Map();
 		this.failedFiles = [];
-		this.progressBar = new SingleBar({
-			format:
-				" {bar} | {percentage}% | {value}/{total} Bytes | Speed: {speed} Bytes/s",
-			barCompleteChar: "\u2588",
-			barIncompleteChar: "\u2591",
-			hideCursor: true,
-		});
+		if (this.config.logStyle === "bar") {
+			this.progressBar = new SingleBar({
+				format:
+					" {bar} | {percentage}% | {value}/{total} Bytes | Speed: {speed} Bytes/s",
+				barCompleteChar: "\u2588",
+				barIncompleteChar: "\u2591",
+				hideCursor: true,
+			});
+		}
 	}
 
 	async uploadFiles(): Promise<void> {
@@ -59,7 +62,9 @@ export abstract class BaseUploader<T extends BaseConfig> {
 		);
 
 		console.log(chalk.cyan(`同步目录, ${localDirPath} -> ${remoteDirPath}`));
-		this.progressBar.start(totalBytes, 0);
+		if (this.config.logStyle === "bar") {
+			this.progressBar?.start(totalBytes, 0);
+		}
 
 		const maxConcurrency = this.config.maxConcurrency ?? 3;
 
@@ -83,7 +88,9 @@ export abstract class BaseUploader<T extends BaseConfig> {
 			await Promise.all(workers);
 		}
 
-		this.progressBar.stop();
+		if (this.config.logStyle === "bar") {
+			this.progressBar?.stop();
+		}
 
 		if (this.failedFiles.length > 0) {
 			console.log(
@@ -156,10 +163,18 @@ export abstract class BaseUploader<T extends BaseConfig> {
 	}
 
 	logProgress(
-		_filePath: string,
+		filePath: string,
 		uploadedBytes: number,
-		_totalBytes: number,
+		totalBytes: number,
 	): void {
-		this.progressBar.update(uploadedBytes);
+		if (this.config.logStyle === "bar") {
+			this.progressBar?.update(uploadedBytes);
+		} else if (
+			this.config.logStyle === "text" ||
+			this.config.logStyle === undefined
+		) {
+			const percent = Math.round((uploadedBytes / totalBytes) * 100);
+			console.log(chalk.gray(`${percent}% Uploaded ${filePath}`));
+		}
 	}
 }

@@ -6,6 +6,7 @@ export type Mode = "ftp" | "ssh";
 export type Options = Pick<Config, "entries" | "localDir" | "remoteDir"> &
 	Config["connect"] & {
 		mode?: Mode;
+		logStyle?: "bar" | "text" | "none";
 	};
 
 export class FtpUpload {
@@ -40,6 +41,7 @@ export class FtpUpload {
 				localDir,
 				remoteDir,
 				connect: sshConnect,
+				logStyle: this.options.logStyle,
 			};
 
 			const uploader = new SshUploader(sshConfig);
@@ -56,6 +58,7 @@ export class FtpUpload {
 				localDir,
 				remoteDir,
 				connect: ftpConnect,
+				logStyle: this.options.logStyle,
 			});
 			await uploader.uploadFiles();
 		}
