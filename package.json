@@ -16,7 +16,7 @@
 		"lint": "biome check src/",
 		"format": "biome check --write src/",
 		"prepare": "husky",
-		"prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish --any-branch"
+		"prepublishOnly": "npm run build && np --no-cleanup --yolo --no-publish --any-branch && npm run build"
 	},
 	"lint-staged": {
 		"*.{js,ts,json,md}": [
