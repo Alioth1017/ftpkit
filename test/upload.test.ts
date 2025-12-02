@@ -29,16 +29,21 @@ const { mockFtpClient, mockSftpClient } = vi.hoisted(() => {
 // Mock external dependencies
 vi.mock("basic-ftp", () => {
 	return {
-		Client: vi.fn().mockImplementation(() => mockFtpClient),
+		// biome-ignore lint/complexity/useArrowFunction: Need constructor
+		Client: vi.fn(function () {
+			return mockFtpClient;
+		}),
 	};
 });
 
 vi.mock("ssh2-sftp-client", () => {
 	return {
-		default: vi.fn().mockImplementation(() => mockSftpClient),
+		// biome-ignore lint/complexity/useArrowFunction: Need constructor
+		default: vi.fn(function () {
+			return mockSftpClient;
+		}),
 	};
 });
-
 vi.mock("node:fs");
 vi.mock("node:fs/promises");
 
